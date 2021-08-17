@@ -11,10 +11,10 @@ app.get( "/", ( req, res ) => {
 
 // Schedule tasks to be run on the server.
 cron.schedule('* * * * *', () => {
-    // console.log('running a task every minute');
+    console.log('running a task every minute');
   });
 
 // start the Express server
 app.listen( port, () => {
-    // console.log( `server started at http://localhost:${ port }` );
+    console.log( `server started at http://localhost:${ port }` );
 } );
