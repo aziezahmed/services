@@ -1,21 +1,17 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-import express from "express";
+import express from 'express';
 import { Client } from 'pg';
 
-
 const app = express();
-const port = 3000; // default port to listen
-
+const port = process.env.PORT || 3000;
 
 // define a route handler for the default home page
-app.get("/", (_req, res) => {
-  res.send("Hello, World!");
+app.get('/', (_req, res) => {
+  res.send('Hello, World!');
 });
 
 // define a route handler for the default home page
-app.get("/books", (_req, res) => {
+app.get('/books', async (req, res) => {
   try {
-
     const client = new Client({
       user: 'postgres',
       host: 'localhost',
@@ -24,16 +20,13 @@ app.get("/books", (_req, res) => {
       port: 5432,
     })
     void client.connect();
-    client.query('SELECT * FROM book', (err, res2) => {
-      console.log(err, res2)
-      void client.end();
-    })
+    const result = await client.query('SELECT * FROM book');
+    res.send(result.rows);
 
     console.log('Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
-  res.send("Hello, World!");
 });
 
 // start the Express server
