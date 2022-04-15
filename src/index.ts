@@ -1,31 +1,37 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import express from 'express';
-import { Client } from 'pg';
+import { knex } from 'knex';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // define a route handler for the default home page
 app.get('/', (_req, res) => {
-  res.send('Hello, World!');
+  res.send('Hello, World!')
 });
 
-// define a route handler for the default home page
-app.get('/books', async (req, res) => {
+app.get('/books', async (req, res, next) => {
   try {
-    const client = new Client({
-      user: 'postgres',
-      host: 'localhost',
-      database: 'postgres',
-      password: 'postgres',
-      port: 5432,
+    const pgDb = knex({
+      client: 'pg',
+      connection: {
+        user: 'postgres',
+        host: 'localhost',
+        database: 'postgres',
+        password: 'postgres',
+        port: 5432,
+      },
+      acquireConnectionTimeout: 2000
     })
-    void client.connect();
-    const result = await client.query('SELECT * FROM book');
-    res.send(result.rows);
+    const result = await pgDb.select('*').from('book')
 
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    if (result) {
+      res.json(result)
+    } else {
+      next()
+    }
+  } catch (err) {
+    next(err)
   }
 });
 

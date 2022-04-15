@@ -114,6 +114,7 @@ module.exports = {
     "no-empty": "error",
     "no-empty-function": "error",
     "no-eval": "error",
+    "no-extra-semi": "error",
     "no-fallthrough": "off",
     "no-invalid-this": "off",
     "no-new-wrappers": "error",
