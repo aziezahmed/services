@@ -4,7 +4,7 @@ import { knex } from 'knex';
 interface Book {
   id: number;
   title: string;
-  author: string;
+  author: number;
 }
 
 const app = express();
@@ -22,7 +22,7 @@ const getBooks = async (): Promise<Book[]> => {
     },
     acquireConnectionTimeout: 2000
   });
-  const result = await pgDb.select('*').from<Book>('book');
+  const result = await pgDb.select('*').from<Book>('books').join('authors', 'authors.authorid','=', 'books.authorid');
   return result;
 }
 
